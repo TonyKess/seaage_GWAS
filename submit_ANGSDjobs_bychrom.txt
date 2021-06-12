@@ -1,0 +1,13 @@
+#for testing
+  while read -r x && read -r y <&3;
+  do sed -i 's/'"$x"'/'"$y"'/' Salmo_AOM_angsdbeag_brian.sh;
+  cat Salmo_AOM_angsdbeag_brian.sh;
+  done <ssa_brian_chr_start.txt 3< ssa_brian_chr_end.txt
+
+#for running
+ while read -r x && read -r y <&3;
+  do sed -i 's/'"$x"'/'"$y"'/' Salmo_AOM_angsdbeag_brian.sh;
+  sbatch Salmo_AOM_angsdbeag_brian.sh; 
+  cat Salmo_AOM_angsdbeag_brian.sh;
+  done <ssa_brian_chr_start.txt 3< ssa_brian_chr_end.txt
+
