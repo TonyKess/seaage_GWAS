@@ -1,0 +1,18 @@
+## Load software modules
+module load samtools
+module load bwa
+
+#change directory and align all reads
+cd /home/tkess/scratch/Salmon_AOM/seaage/trimcutadapt
+#set file contains a set of reads - I change the set and run these in parallel
+
+
+while read outfile;
+  do echo $outfile\.bam ;
+  bwa mem \
+  -t 32 \
+  -R "@RG\tID:$outfile\tSM:$outfile\tLB:AOM_Salmon" \
+  /home/tkess/scratch/Salmon_Brian_genome/Brian_pilon_CHR.fasta \
+  $outfile\_R1_trim.fastq.gz  $outfile\_R2_trim.fastq.gz\
+  | samtools sort -o $outfile\.sorted.bam -T $outfile -@ 32 -m 3G ;
+  done < set1.txt
