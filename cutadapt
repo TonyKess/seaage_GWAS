@@ -1,0 +1,18 @@
+#run cutadapt in parallel
+cd scratch/Salmon_AOM/seaage/trimcutadapt
+
+ls NS.1300.002*R1.fastq.gz | \
+  sed 's/R1.fastq.gz//'| \
+  parallel -j 4 'cutadapt \
+    -j 4 \
+    -u 15 \
+    --minimum-length 40 \
+    -q 10 \
+    -A CTGTCTCTTATACACA \
+    -a CTGTCTCTTATACACA \
+    -G GATGTGTATAAGAGACAG  \
+    -g GATGTGTATAAGAGACAG \
+    -o {}R1_trim.fastq.gz \
+    -p {}R2_trim.fastq.gz \
+    {}R1.fastq.gz \
+    {}R2.fastq.gz '
