@@ -1,0 +1,5 @@
+module load samtools
+
+cd /home/tkess/scratch/Salmon_AOM/seaage/Brian_aligned/
+for i in *deDup.bam  ;
+  do samtools index $i ; done
