@@ -5,5 +5,4 @@ while read outfile;
   do java -Xmx100g -jar /home/tkess/bcbiopipeline/bcbio/anaconda/share/picard-2.21.7-0/picard.jar MarkDuplicates \
   I=$outfile.sorted.bam O=$outfile.deDup.bam \
   M=$outfile\_deDupMetrics.txt REMOVE_DUPLICATES=true
-  done <  missing2_trimnotalign.txt
-
+  done <  set1.txt
