@@ -1,7 +1,7 @@
 #run cutadapt in parallel
 cd scratch/Salmon_AOM/seaage/trimcutadapt
 
-ls NS.1300.002*R1.fastq.gz | \
+ls *R1.fastq.gz | \
   sed 's/R1.fastq.gz//'| \
   parallel -j 4 'cutadapt \
     -j 4 \
