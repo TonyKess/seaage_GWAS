@@ -1,18 +1,18 @@
+#ensure you are in your home directory - this script assumes starting in /home/user
+# Submit with: sbatch Salmo_AOM_align
 ## Load software modules
 module load samtools
 module load bwa
 
 #change directory and align all reads
-cd /home/tkess/scratch/Salmon_AOM/seaage/trimcutadapt
-#set file contains a set of reads - I change the set and run these in parallel
-
+cd /home/tkess/scratch/ENA/trimcutadapt
 
 while read outfile;
   do echo $outfile\.bam ;
   bwa mem \
   -t 32 \
   -R "@RG\tID:$outfile\tSM:$outfile\tLB:AOM_Salmon" \
-  /home/tkess/scratch/Salmon_Brian_genome/Brian_pilon_CHR.fasta \
+  /home/tkess/scratch/Salmon_CIGENE_Ref/reference/CIGENE-ICSASG_v2.fa \
   $outfile\_R1_trim.fastq.gz  $outfile\_R2_trim.fastq.gz\
-  | samtools sort -o $outfile\.sorted.bam -T $outfile -@ 32 -m 3G ;
-  done < set1.txt
+  | samtools sort -o ../CIGENE_align/$outfile\.sorted.bam -T $outfile -@ 32 -m 3G ;
+  done < allsamps.txt
