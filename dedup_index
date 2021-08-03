@@ -1,5 +1,5 @@
 module load samtools
 
-cd /home/tkess/scratch/Salmon_AOM/seaage/Brian_aligned/
+cd /home/tkess/scratch/Salmon_AOM/seaage/CIGENE_align/
 for i in *deDup.bam  ;
   do samtools index $i ; done
