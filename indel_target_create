@@ -1,0 +1,17 @@
+## Load software modules
+module load nixpkgs/16.09
+module load gatk/3.7
+
+#First index dedup reads - do with Salmo_AOM_dedupindex.sh
+cd /home/tkess/scratch/Salmon_AOM/seaage/CIGENE_align/
+
+#get to realigning
+ls *.deDup.bam | \
+  sed 's/.deDup.bam$//' | \
+  parallel --jobs 32 \
+  'java -Xmx6g -jar $EBROOTGATK/GenomeAnalysisTK.jar  \
+  -T RealignerTargetCreator \
+  -R /home/tkess/scratch/Salmon_CIGENE_Ref/reference/CIGENE-ICSASG_v2.fa \
+  -I {}.deDup.bam \
+  -o {}.intervals'
+
