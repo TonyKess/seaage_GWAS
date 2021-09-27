@@ -1,0 +1,24 @@
+#use that new angsd
+/home/tkess/angsd/angsd \
+  -nThreads 32 \
+  -doGlf 2 \
+  -dobcf 1 \
+  -dopost 1 \
+  -gl 1 \
+  -domajorminor 1 \
+  -doMaf 1 \
+  -docounts 1 \
+  -minMapQ 30 \
+  -minQ 20 \
+  -minInd 470 \
+  -out Salmo_brian_ssa29_CIGENE_80geno \
+  -SNP_pval 2e-6 \
+  -minMaf 0.01 \
+  -dumpCounts 2 \
+  -doQsDist 1 \
+  -setMinDepth 500 \
+  -uniqueOnly 1 \
+  -remove_bads 1 \
+  -r ssa29: \
+  -only_proper_pairs 1 \
+  -bam Salmo_bams_all_nodup.txt
