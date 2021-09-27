@@ -1,8 +1,11 @@
+module load picard
 ##Go to the bams
-cd /home/tkess/scratch/Salmon_AOM/seaage/trimcutadapt
+
+cd /home/tkess/scratch/Salmon_AOM/seaage/CIGENE_align
 
 while read outfile;
-  do java -Xmx100g -jar /home/tkess/bcbiopipeline/bcbio/anaconda/share/picard-2.21.7-0/picard.jar MarkDuplicates \
+  do java -Xmx100g -jar $EBROOTPICARD/picard.jar MarkDuplicates \
   I=$outfile.sorted.bam O=$outfile.deDup.bam \
   M=$outfile\_deDupMetrics.txt REMOVE_DUPLICATES=true
-  done <  set1.txt
+  done <  all_samps_11_21.txt
+
