@@ -1,0 +1,15 @@
+module load python
+source ~/python_env/bin/activate
+cd /home/tkess/pcangsd
+
+python pcangsd.py \
+  -beagle #/Beagle_files/Salmo_CIGENE_80geno_HD.beagle.gz \
+  -selection \
+  -threads 32 \
+  -admix \
+  -o #/Beagle_files/Salmo_CIGENE_80geno_HD \
+  -sites_save 
+  -snp_weights
+
+deactivate
+
