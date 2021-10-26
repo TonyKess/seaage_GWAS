@@ -1,0 +1,4 @@
+
+ls Salmo_ssa*_CIGENE_80geno_Female_MSW_NL.vcf.gz | \
+  sed 's/Female_MSW_NL.vcf.gz//' | \
+  parallel --jobs 29 '/home/tkess/selscan/bin/linux/selscan --xpnsl --vcf {}Female_MSW_NL.vcf.gz --vcf-ref {}Female_1SW_NL.vcf.gz --out {}Female_1SWMSW_NL '
