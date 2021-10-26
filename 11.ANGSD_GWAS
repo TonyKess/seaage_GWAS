@@ -1,0 +1,12 @@
+cd /home/tkess/scratch/Salmon_AOM/seaage/CIGENE_align
+
+/home/tkess/angsd/angsd \
+  -doMaf 4 \
+  -vcf-gp Salmo_ssa01_CIGENE_80geno_hd.vcf.gz \
+  -fai /home/tkess/scratch/Salmon_CIGENE_Ref/reference/CIGENE-ICSASG_v2.fa.fai  \
+  -yBin All_Ageclass_HD.txt  \
+  -out GWAS_out/All_hd_ssa01_2PC \
+  -doAsso 4 \
+  -cov All_HD_PCA_12.txt \
+  -nthreads 10
+
