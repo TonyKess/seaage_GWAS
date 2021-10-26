@@ -1,0 +1,5 @@
+module load vcftools
+for i in {01..29]; do vcftools --gzvcf Salmo_ssa$i\_CIGENE_80geno_hd.vcf.gz  \
+  --weir_fst Female_1SW_QN_test.txt \
+  --weir_fst Female_MSW_QN_test.txt \
+  --out F_QN$i\_test ; done
