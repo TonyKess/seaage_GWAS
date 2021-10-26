@@ -1,0 +1,3 @@
+cd /home/tkess/scratch/Salmon_AOM/seaage/CIGENE_align/Beagle_files
+
+java -Xmx120g -jar /home/tkess/beagle.jar like=Salmo_CIGENE_ssa29_80geno_HD.beagle  out=All
