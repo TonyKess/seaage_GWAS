@@ -1,3 +1,7 @@
 cd /home/tkess/scratch/Salmon_AOM/seaage/CIGENE_align/Beagle_files
 
+# for matrix of likelihood-based dosages for RF, RDA
 java -Xmx120g -jar /home/tkess/beagle.jar like=Salmo_CIGENE_ssa29_80geno_HD.beagle  out=All
+
+# for VCF for asso
+java -Xmx80g -jar /home/tkess/beagle.r1399.jar gl=Salmo_ssa29_CIGENE_80geno_higherdepth.recode.vcf
