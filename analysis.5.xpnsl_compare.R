@@ -25,7 +25,7 @@ Female_1SW_MSW_QN <- Salmon_Metadata_Bam_Unique_HD %>% filter(PCR_Sex =="F", Riv
 Female_1SW_MSW_NL <- Salmon_Metadata_Bam_Unique_HD %>% filter(PCR_Sex =="F", RiverCode %in% NL)
 
 #FQN
-#lsit files
+#list files
 FQN_norm_files <- list.files(path = "./", pattern = ".*Female_1SWMSW_QN.xpnsl.*windows")
 
 # get chrom IDs
@@ -52,7 +52,7 @@ colnames(FQN_norm_sig_gene_overlap) <- c("CHROM", "POS", "BPtoo", "gene",  "top_
 
 
 #MQN
-#lsit files
+#list files
 MQN_norm_files <- list.files(path = "./", pattern = ".*Male_1SWMSW_QN.xpnsl.*windows")
 
 #read in files as list
@@ -79,7 +79,7 @@ colnames(MQN_norm_sig_gene_overlap) <- c("CHROM", "POS", "BPtoo", "gene",  "top_
 
 
 #FNL
-#lsit files
+#list files
 FNL_norm_files <- list.files(path = "./", pattern = ".*Female_1SWMSW_NL.xpnsl.*windows")
 
 #read in files as list
@@ -103,7 +103,7 @@ colnames(FNL_norm_sig_gene_overlap) <- c("CHROM", "POS", "BPtoo", "gene",  "top_
 
 
 #MNL
-#lsit files
+#list files
 MNL_norm_files <- list.files(path = "./", pattern = ".*Male_1SWMSW_NSL.xpnsl.*windows")
 
 #read in files as list
@@ -127,14 +127,6 @@ MNL_norm_sig_gene_overlap <- fread("MNL_norm_sig_gene_overlap") %>% select(V5, V
 colnames(MNL_norm_sig_gene_overlap) <- c("CHROM", "POS", "BPtoo", "gene",  "top_Xpcent_wins_by_frac_gt_2", "frac_sites_xpnsl_gt_2", "top_Xpcent_of_wins_by_frac_lt_2", "frac_sites_xpnsl_lt_2")
 
 OL_gene_all <- unique(c(MNL_norm_sig_gene_overlap$gene,  FNL_norm_sig_gene_overlap$gene, MQN_norm_sig_gene_overlap$gene,FQN_norm_sig_gene_overlap$gene))
-
-#six6 vgll3 etc
-SCW_loci <- c("LOC106603085", "phs", "calhm3", "LOC106607716", "LOC106610932", "LOC106611671", "LOC106563476", "scamp1", "ptpa", "LOC106570862", "LOC106598444", "LOC106600468", "LOC106602561", "LOC106602634", "LOC106602724", "acsl1", "LOC106602846", "LOC106602938", "LOC106602949", "atg4a", "LOC106603569", "LOC106603552", "LOC106603548", "LOC106603550", "LOC106603415", "LOC106603634", "LOC106603677", "LOC106603676", "opcml", "LOC106605010", "LOC106605123", "LOC106605325", "LOC106606975", "LOC106606972", "LOC106606978", "LOC106609940", "LOC106610586", "LOC106610702", "LOC106611044", "six6", "LOC106610951", "ypel5", "LOC106611117", "LOC106611159", "LOC106611209", "LOC106611243", "ocrl", "LOC106611537", "LOC106611736", "LOC106611993", "LOC106612445", "pid1", "LOC106613053", "LOC106613255", "scaf4", "LOC106613903", "LOC100194696", "LOC106560912", "LOC106560912", "mppd2", "LOC106562713", "LOC106565279", "LOC106565354", "LOC106566502", "LOC106566519", "LOC106566728", "LOC106566890", "LOC106567043", "LOC106567439", "LOC106567659", "fa76b", "metk1", "LOC106568331", "LOC106568538", "LOC106568853", "LOC106569180", "tep1", "LOC106569569", "LOC106569685", "eomes", "LOC106570041", "LOC106570240", "LOC106570256", "LOC106570261", "ndufs4", "rad51b", "LOC106571738", "LOC106571870", "LOC106571940", "LOC106572154", "LOC106572115", "LOC106573506", "LOC106577101", "LOC106577101", "LOC106581384", "LOC106581613", "fgf14", "LOC106581859", "LOC106582292", "LOC106582431", "LOC106582845", "LOC106584946", "LOC106585937", "LOC106586064", "LOC106586268", "LOC106586269", "LOC106586317", "LOC106586310", "LOC106586456", "LOC106586520", "LOC106586514", "LOC106586625", "LOC106586653", "LOC106586753", "LOC106586749", "LOC106586824", "LOC106586862", "nrxn1", "LOC106590053", "LOC106590047")
-MNL_norm_sig_gene_overlap %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma","LOC106563683",  "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830", "tead3"))
-FNL_norm_sig_gene_overlap %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma","LOC106563683",  "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830", "tead3"))
-MQN_norm_sig_gene_overlap %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma","LOC106563683",  "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830","tead3"))
-FQN_norm_sig_gene_overlap %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma","LOC106563683",  "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830","tead3"))
-
 
 #get GWAS PCA FST stats
 PC_FST_GWA_PCcor_MSW_1SW_gene_overlap <- fread("All_2PCcorr/PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats.tsv")
@@ -173,7 +165,6 @@ ggplot() + geom_density(data = res, aes(x = res)) +
 }
 
 
-
 #in regions
 parfunc(Group1 = MNL_norm_sig_gene_overlap , Group2 = FNL_norm_sig_gene_overlap)
 length(MNL_norm_sig_gene_overlap$gene[MNL_norm_sig_gene_overlap$gene %in% FNL_norm_sig_gene_overlap$gene])/
@@ -182,7 +173,6 @@ length(MNL_norm_sig_gene_overlap$gene[MNL_norm_sig_gene_overlap$gene %in% FNL_no
 parfunc(Group1 = MQN_norm_sig_gene_overlap , Group2 = FQN_norm_sig_gene_overlap)
 length(MQN_norm_sig_gene_overlap$gene[MQN_norm_sig_gene_overlap$gene %in% FQN_norm_sig_gene_overlap$gene])/
   length(unique(c(MQN_norm_sig_gene_overlap$gene,FQN_norm_sig_gene_overlap$gene)))
-
 
 #in sex
 parfunc(Group1 = FQN_norm_sig_gene_overlap , Group2 = FNL_norm_sig_gene_overlap)
@@ -194,87 +184,7 @@ length(MNL_norm_sig_gene_overlap$gene[MNL_norm_sig_gene_overlap$gene %in% MQN_no
   length(unique(c(MNL_norm_sig_gene_overlap$gene,MQN_norm_sig_gene_overlap$gene)))
 
 
-#get top loci for each group, by GWAS score - get top 1000 first to filter beagle via command line, can downsample in R from there
-
-All_PCcor_top100_LRT_genes <- PC_FST_GWA_PCcor_MSW_1SW_gene_overlap %>%
-  group_by(gene) %>%
-  filter(LRT == max(LRT))  
-All_PCcor_top100_LRT_genes <- data.frame(All_PCcor_top100_LRT_genes) %>%  slice_max(LRT, n = 100)
-sig_ALL <- PC_FST_GWA_PCcor_MSW_1SW_gene_overlap %>% filter(GWAS_PCcor_q < 0.05)
-Sig_All_gene <- inner_join(sig_ALL, All_PCcor_top100_LRT_genes)
-fwrite(Sig_All_gene, "Sig_All_gene", col.names = T, row.names = F, sep = "\t", quote = F)
-
-
-FQN_PC_FST_GWA_PCcorr_topLRT_genes <- FQN_PC_FST_GWA_PCcorr_gene_overlap %>% 
-  group_by(gene) %>%
-  filter(LRT == max(LRT)) 
-FQN_sig <- FQN_PC_FST_GWA_PCcorr_gene_overlap %>% filter(GWAS_PCcor_q < 0.05) %>%  distinct(gene)
-
-FQN_top100_LRT <- data.frame(FQN_PC_FST_GWA_PCcorr_topLRT_genes) %>%  slice_max(LRT, n = 100)
-
-
-MQN_PC_FST_GWA_PCcorr_topLRT_genes <- MQN_PC_FST_GWA_PCcorr_gene_overlap %>% 
-  group_by(gene) %>%
-  filter(LRT == max(LRT)) 
-MQN_top100_LRT <-  data.frame(MQN_PC_FST_GWA_PCcorr_topLRT_genes) %>%  slice_max(LRT, n = 100)
-
-
-FNL_PC_FST_GWA_PCcorr_topLRT_genes <- FNL_PC_FST_GWA_PCcorr_gene_overlap %>% 
-  group_by(gene) %>%
-  filter(LRT == max(LRT)) 
-FNL_top100_LRT <-  data.frame(FNL_PC_FST_GWA_PCcorr_topLRT_genes) %>%  slice_max(LRT, n = 100)
-
-
-MNL_PC_FST_GWA_PCcorr_topLRT_genes <- MNL_PC_FST_GWA_PCcorr_gene_overlap %>% 
-  group_by(gene) %>%
-  filter(LRT == max(LRT)) 
-MNL_top100_LRT <-  data.frame(MNL_PC_FST_GWA_PCcorr_topLRT_genes) %>%  slice_max(LRT, n = 100)
-
-
-
-#check gene overlap
-MNL_LRT100_gene <- MNL_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-FNL_LRT100_gene <- FNL_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-MQN_LRT100_gene <- MQN_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-FQN_LRT100_gene <- FQN_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-
-FNL_LRT100_gene$gene %in% FQN_LRT100_gene$gene
-
-
-MNL_LRT100_gene[MNL_LRT100_gene$gene %in%  MNL_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T)
-FNL_LRT100_gene[FNL_LRT100_gene$gene %in%  FNL_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T)
-MQN_LRT100_gene[MQN_LRT100_gene$gene %in%  MQN_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T)
-FQN_LRT100_gene[FQN_LRT100_gene$gene %in%  FQN_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T)
-
-MNL_LRT100_gene[MNL_LRT100_gene$gene %in%  MNL_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T) %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma", "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830", "tead3"))
-FNL_LRT100_gene[FNL_LRT100_gene$gene %in%  FNL_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T) %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma", "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830", "tead3"))
-MQN_LRT100_gene[MQN_LRT100_gene$gene %in%  MQN_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T) %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma", "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830","tead3"))
-FQN_LRT100_gene[FQN_LRT100_gene$gene %in%  FQN_norm_sig_gene_overlap$gene, ] %>%  distinct(gene, .keep_all = T) %>% filter(gene %in% c("magi2", "six6", "vgll3", "picalma", "akap11", "ndufs4", "rora","cntn4", "LOC106581831", "LOC106581727", "LOC106581830","tead3"))
-
-
-
- 
-MNL_LRT_XPnsl_OL_bed <-  MNL_LRT100_gene[MNL_LRT100_gene$gene %in%  MNL_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene )  
-FNL_LRT_XPnsl_OL_bed <-  FNL_LRT100_gene[FNL_LRT100_gene$gene %in%  FNL_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene )  
-MQN_LRT_XPnsl_OL_bed <-  MQN_LRT100_gene[MQN_LRT100_gene$gene %in%  MQN_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene )  
-FQN_LRT_XPnsl_OL_bed <-  FQN_LRT100_gene[FQN_LRT100_gene$gene %in%  FQN_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene ) 
-
-
-fwrite(MNL_LRT_XPnsl_OL_bed, "MNL_LRT_XPnsl_OL.bed", col.names = F, row.names = F, sep = "\t", quote = F)
-fwrite(FNL_LRT_XPnsl_OL_bed, "FNL_LRT_XPnsl_OL.bed", col.names = F, row.names = F, sep = "\t", quote = F)
-fwrite(MQN_LRT_XPnsl_OL_bed, "MQN_LRT_XPnsl_OL.bed", col.names = F, row.names = F, sep = "\t", quote = F)
-fwrite(FQN_LRT_XPnsl_OL_bed, "FQN_LRT_XPnsl_OL.bed", col.names = F, row.names = F, sep = "\t", quote = F)
-
-system("sed -i.bun 's/ssa/chr/' *LRT_XPnsl_OL.bed")
-system("mv *LRT_XPnsl_OL.bed ~/Desktop/Working/Salmon_GO_terms")
-
-
-MNL_LRT_XPnsl_OL <-  inner_join(MNL_LRT100_gene, MNL_norm_sig_gene_overlap, by = "gene")
-FNL_LRT_XPnsl_OL_bed <-  FNL_LRT100_gene[FNL_LRT100_gene$gene %in%  FNL_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene )  
-MQN_LRT_XPnsl_OL_bed <-  MQN_LRT100_gene[MQN_LRT100_gene$gene %in%  MQN_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene )  
-FQN_LRT_XPnsl_OL_bed <-  FQN_LRT100_gene[FQN_LRT100_gene$gene %in%  FQN_norm_sig_gene_overlap$gene, ] %>% select(CHROM, POS, BPtoo, gene ) 
-
-  geom_vline(xintercept =  28659019) + theme_classic()
+#plot for chr 25 and 9, illustrious homes of vgll3 and six6.
 
 ggplot() + geom_point(data = FQN_norm %>% filter(CHROM %in% "ssa25",top_Xpcent_wins_by_frac_gt_2 %in% 1), aes(y = max_xpnsl, x = win_start, colour = "FQN")) + 
   geom_point(data = FNL_norm %>% filter(CHROM %in% "ssa25", top_Xpcent_wins_by_frac_gt_2 %in% 1), aes(y = max_xpnsl, x = win_start, colour = "FNL")) +
@@ -298,7 +208,7 @@ ggplot() + geom_point(data = FQN_norm %>% filter(CHROM %in% "ssa09",top_Xpcent_w
   geom_vline(xintercept =  24902777) +
   geom_vline(xintercept =  24905552) + theme_classic()
 
-
+##plot all just to see what's up
 ggplot() + geom_point(data = FQN_norm %>% filter(top_Xpcent_wins_by_frac_gt_2 %in% 1), aes(y = max_xpnsl, x = win_start, colour = "FQN")) + 
   geom_point(data = FNL_norm %>% filter(top_Xpcent_wins_by_frac_gt_2 %in% 1), aes(y = max_xpnsl, x = win_start, colour = "FNL")) +
   geom_point(data = MNL_norm %>% filter(top_Xpcent_wins_by_frac_gt_2 %in% 1), aes(y = max_xpnsl, x = win_start, colour = "MNL")) +
@@ -309,38 +219,4 @@ ggplot() + geom_point(data = FQN_norm %>% filter(top_Xpcent_wins_by_frac_gt_2 %i
   geom_smooth(data = MQN_norm %>% filter(!top_Xpcent_wins_by_frac_gt_2 %in% 1), aes(y = max_xpnsl, x = win_start, colour = "MQN"), method = "loess", span = 0.03, se = F) +
   theme_classic() + facet_wrap(~CHROM, scales = "free_x")
 
-
-MNL_LRT100_gene <- MNL_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-FNL_LRT100_gene <- FNL_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-MQN_LRT100_gene <- MQN_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-FQN_LRT100_gene <- FQN_PC_FST_GWA_PCcorr_gene_overlap  %>%  slice_max(LRT, n = 100)
-
-
- write.table(unique(MNL_LRT100_gene$gene), "MNL_LRT100_gene.txt", col.names = F, row.names = F, sep = "\t", quote = F) 
- write.table(unique(FNL_LRT100_gene$gene), "FNL_LRT100_gene.txt", col.names = F, row.names = F, sep = "\t", quote = F) 
- write.table(unique(MQN_LRT100_gene$gene), "MQN_LRT100_gene.txt", col.names = F, row.names = F, sep = "\t", quote = F) 
- write.table(unique(FQN_LRT100_gene$gene), "FQN_LRT100_gene.txt", col.names = F, row.names = F, sep = "\t", quote = F) 
-
-quantile(FNL_PC_FST_GWA_PCcorr_gene_overlap$FST, 0.99)
-
-
-#revigo plot
-
-pal <- wes_palette("Zissou1", 100, type = "continuous")
-GO_plot <- function(REVIGO) {
-  GO <- REVIGO
-  GO$PlotX <- as.numeric(GO$PlotX) 
-  GO$PlotY <- as.numeric(GO$PlotY) 
-  
-  PLOT <- ggplot(GO) + geom_point(aes(x = PlotX, y = PlotY, colour = Uniqueness, size = LogSize)) +
-    labs (y = "semantic space x", x = "semantic space y") + 
-    geom_text(aes(PlotX, PlotY, label = Name), colour = I(alpha("black", 0.85)), size = 3 ) + theme_classic() 
-  PLOT +  scale_colour_gradientn(colours = pal) }
-
-
-All_GO <- fread("Revigo_tiny.csv")
-
-GO_plot(All_GO)
-
-FQN_GO$Name[FQN_GO$Name %in% MQN_GO$Name]
 
