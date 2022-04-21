@@ -2,7 +2,8 @@ library(RcppCNPy)
 library(tidyverse)
 library(data.table)
 library(qvalue)
-
+library(vegan)
+library(ggman)
 setwd(dir = "~/Desktop/Working/Sea_Age/")
 #Read in metadata
 #write IDs for running ANGSD genotyping and GL
@@ -61,7 +62,7 @@ ggplot() + geom_point(data =  PCAscores, aes(x = V4, y = V5, colour
 #Get PCA axes for covariates in GWAS
 write.table(PCAscores[7:8], "All_HD_PCA_12.txt", col.names = F, row.names = F, sep = "\t", quote = F)
 
-###Make an admixture plot too because wooohoo
+###Make an admixture plot too 
 All_admix <- fread("Salmo_CIGENE_80geno_HD.admix.6.Q")
 Salmo_admix_meta <- data.frame(cbind(Salmon_Metadata_Bam_Unique_HD, All_admix))
 colnames(Salmo_admix_meta)
@@ -170,7 +171,7 @@ colnames(All_sites_pos)[3:8] <- c("KEEP", "PC1", "PC2", "PC3", "PC4", "PC5")
 All_sites_pos$pvals_PC1 <- 1- pchisq(q =All_sites_pos$PC1, df = 1)
 qvals <- qvalue(All_sites_pos$pvals_PC1)
 All_sites_pos$qvals_PC1 <- qvals$qvalues
-All_sites_sigsites_PC1 <- All_sites_pos %>%  filter(qvals_PC1 < 0.01)
+All_sites_sigsites_PC1 <- All_sites_pos %>%  filter(qvals_PC1 < 0.05)
 
 All_sites_six6 <-  All_sites_pos %>% filter(CHROM %in% "ssa09", POS > 24902777, POS <24905552)
 All_sites_vgll3 <-  All_sites_pos %>% filter(CHROM %in% "ssa25", POS > 28654947, POS <28659019)
@@ -181,7 +182,10 @@ All_sites_vgll3 <- All_sites_vgll3 %>%  mutate(gene = "vgll3")
 six6_vgll3_WG <- bind_rows(All_sites_six6, All_sites_vgll3) %>%  
   mutate(SNP = paste0(CHROM, "_", POS)) %>% 
   select(SNP, gene)
-  
+
+#plot PCA overlap with six6
+ggmanHighlightGroup(ALL_PCload, highlightDfm = six6_vgll3_WG, snp = "SNP", group = "gene")
+
 
 ggplot() + geom_point(data = All_sites_sigsites_PC1, aes(x = POS, y =-log10(qvals_PC1))) + facet_wrap(~CHROM, scales = "free_x") + 
   theme_classic()  + geom_point(data = All_sites_six6 %>%  filter(qvals_PC1 < 0.01), aes(x = POS, y =-log10(qvals_PC1), colour = "six6"))
@@ -194,8 +198,8 @@ ALL_PCload <- ggman(gwas = All_sites_sigsites_PC1, snp = "SNP", bp = "POS", chro
 
 ggmanHighlightGroup(ALL_PCload, highlightDfm = six6_vgll3_WG, snp = "SNP", group = "gene")
 
-All_sites_sigsites_PC1_bed <- All_sites_sigsites_PC1 %>%  select(CHROM, POS) %>% 
-  mutate(POSJR = POS + 1)
+All_sites_sigsites_PC1_bed <- All_sites_sigsites_PC1 %>%  select(CHROM, POS, qvals_PC1) %>% 
+  mutate(POSJR = POS + 1) %>%  select(CHROM, POS, POSJR, qvals_PC1)
 
 
 #Check SV overlap
@@ -203,12 +207,15 @@ All_sites_sigsites_PC1_bed %>%  filter(CHROM %in% "ssa01", POS > 44000000,  POS 
 All_sites_sigsites_PC1_bed  %>%  filter(CHROM %in% "ssa23",POS < 8000000)
 
 
-
 fwrite(All_sites_sigsites_PC1_bed, "All_sites_sigsites_PC1.bed", sep = "\t", quote = F, row.names = F, col.names = F)
-system("bedtools intersect -a SSA_GENES.bed -b All_sites_sigsites_PC1.bed > All_sites_sigsites_PC1_genes.txt ")
+system("bedtools intersect -a SSA_GENES.bed -b All_sites_sigsites_PC1.bed -wb > All_sites_sigsites_PC1_genes.txt ")
 
-distinct_PC1_WG <- fread("../All_sites_sigsites_PC1_genes.txt") %>%  select(V4) %>%  distinct
-fwrite(distinct_PC1_WG, "distinct_PC1_WG", col.names = F, row.names = F, sep = "\t", quote = F)
+PC1_geneoverlap <- fread("All_sites_sigsites_PC1_genes.txt") %>%  mutate (Chromosome = V1, Position = V2, Gene = V4,  qval = V8) %>%  
+  select (Chromosome, Position, Gene ,  qval)
+
+fwrite(PC1_geneoverlap, "Supplementary_Table_2_PCANGSD_genes.txt", sep = "\t", col.names = F, row.names = F, quote = F)
+PC1_geneoverlap_distinct <- PC1_geneoverlap %>%  arrange(Gene) %>% 
+  distinct(Gene)
 
 #F_QN_PCA
 #import pcangsd fastPCA loadings per site
@@ -371,6 +378,7 @@ ggplot() + geom_point(data =PC_FST_GWA_MSW_1SW %>%  sample_n(50000), aes(y = FST
 ggplot() + geom_point(data =PC_FST_GWA_MSW_1SW %>%  sample_n(50000), aes(y = FST, x = beta)) + theme_classic()
 ggplot() + geom_point(data =PC_FST_GWA_MSW_1SW %>% sample_n(50000), aes(x = Frequency, y = beta)) + theme_classic()
 cor.test(PC_FST_GWA_MSW_1SW$FST, PC_FST_GWA_MSW_1SW$LRT)
+
 #PC corrected
 setwd("../All_2PCcorr/")
 All_PCcorr<- 
@@ -409,8 +417,10 @@ ggplot() + geom_point(data =PC_FST_GWA_PCcor_MSW_1SW %>% filter(Frequency <= 0.5
 cor.test(PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats$FST, PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats$LRT)
 
 All_PCcorr_sig <- PC_FST_GWA_PCcor_MSW_1SW %>% filter(GWAS_PCcor_q < 0.05)
-All_PCcorr_sig_gene <- inner_join(All_PCcorr_sig, PC_FST_GWA_PCcor_MSW_1SW_gene_overlap_stats)
+All_PCcorr_sig_gene <- inner_join(All_PCcorr_sig, PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats)
 fwrite(All_PCcorr_sig, "All_PCcorr_sig_gene", col.names = T, row.names = F, sep = "\t", quote = F)
+
+
 
 #F_QN PC corrected
 setwd("../F_QN_GWAS//")
@@ -441,7 +451,6 @@ colnames(FQN_PC_FST_GWA_PCcor_gene_overlap) <- c("CHROM", "POS", "BPtoo", "gene"
 FQN_PC_FST_GWA_PCcor_gene_overlap_stats <- inner_join(FQN_PC_FST_GWA_PCcor_gene_overlap, FQN_PC_FST_GWA_PCcor)
 fwrite(FQN_PC_FST_GWA_PCcor_gene_overlap_stats, "FQN_PC_FST_GWA_PCcor_gene_overlap_stats.tsv", col.names = T, row.names = F,
        quote = F, sep = "\t")
-
 
 ggplot() + geom_point(data =FQN_PC_FST_GWA_PCcor %>%  sample_n(50000), aes(y = FST, x = -log10(GWAS_PCcor_q))) + theme_classic()
 ggplot() + geom_point(data =FQN_PC_FST_GWA_PCcor %>%  sample_n(50000), aes(y = FST, x = LRT)) + theme_classic()
@@ -496,6 +505,13 @@ ggplot() + geom_point(data =FNL_PC_FST_GWA_PCcor %>% filter(Frequency <= 0.5) %>
 
 
 cor.test(FNL_PC_FST_GWA_PCcor_gene_overlap_stats$FST, FNL_PC_FST_GWA_PCcor_gene_overlap_stats$LRT)
+
+#write out overlaps with genes for Sup table
+FQN_sig_gene <- FQN_sig_gene %>%  mutate(Chromosome = CHROM, Position = POS, Gene = gene, qval = GWAS_PCcor_q) %>%  select(Chromosome, Position , Gene, qval ) %>%  mutate(Method = "Female Quebec New Brunswick GWAS PCA corrected")
+All_PCcorr_sig_gene <- All_PCcorr_sig_gene %>%  mutate(Chromosome = CHROM, Position = POS, Gene = gene, qval = GWAS_PCcor_q) %>%  select(Chromosome, Position , Gene, qval ) %>%  mutate(Method = "All GWAS PCA corrected")
+SupTable_5<- bind_rows(All_PCcorr_sig_gene, FQN_sig_gene)
+write.table(SupTable_5, "Supplementary_Table_5_WGS_GWAS_sig_geneoverlap.tsv", col.names = T, row.names = F, sep = "\t", quote = F)
+
 
 #M_QN PC corrected
 setwd("../M_QN_GWAS//")
@@ -572,50 +588,6 @@ ggplot() + geom_point(data =MNL_PC_FST_GWA_PCcor %>% filter(Frequency <= 0.5) %>
 
 cor.test(MNL_PC_FST_GWA_PCcor_gene_overlap_stats$LRT, MNL_PC_FST_GWA_PCcor_gene_overlap_stats$FST )
 
-#Plotting and overlap with six6 or vggll3 
-PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats <- PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats %>%  mutate(SNP =  paste0(CHROM, "_", POS))
-MNL_PC_FST_GWA_PCcor_gene_overlap_stats <- MNL_PC_FST_GWA_PCcor_gene_overlap_stats %>%  mutate(SNP =  paste0(CHROM, "_", POS))
-FNL_PC_FST_GWA_PCcor_gene_overlap_stats <- FNL_PC_FST_GWA_PCcor_gene_overlap_stats %>%  mutate(SNP =  paste0(CHROM, "_", POS))
-MQN_PC_FST_GWA_PCcor_gene_overlap_stats <- MQN_PC_FST_GWA_PCcor_gene_overlap_stats %>%  mutate(SNP =  paste0(CHROM, "_", POS))
-FQN_PC_FST_GWA_PCcor_gene_overlap_stats <- FQN_PC_FST_GWA_PCcor_gene_overlap_stats %>%  mutate(SNP =  paste0(CHROM, "_", POS))
-
-All_PCcor_top2000 <- PC_FST_GWA_PCcor_MSW1SW_gene_overlap_stats %>%
-  top_n(2000, LRT)
-
-FQN_PC_FST_GWA_PCcor_top500 <- FQN_PC_FST_GWA_PCcor_gene_overlap_stats %>% 
-  top_n(500, LRT)
-
-FNL_PC_FST_GWA_PCcor_top500 <-FNL_PC_FST_GWA_PCcor_gene_overlap_stats  %>% 
-  top_n(500, LRT)
-
-MQN_PC_FST_GWA_PCcor_top500 <- MQN_PC_FST_GWA_PCcor_gene_overlap_stats  %>% 
-  top_n(500, LRT)
-
-MNL_PC_FST_GWA_PCcor_top500 <- FQN_PC_FST_GWA_PCcor_gene_overlap_stats  %>% 
-  top_n(500, LRT)
-
-
-ALL_PCload <- ggman(gwas = All_sites_sigsites_PC1, snp = "SNP", bp = "POS", chrom = "CHROM", pvalue = "qvals_PC1", 
-                    xlabel = "Chromosome", ylabel = "-log10(qvalue)", pointsize = 5, 
-                    logTransform = T) + theme_classic()
-
-ggmanHighlightGroup(ALL_PCload, highlightDfm = six6_vgll3_WG, snp = "SNP", group = "gene")
-
-All_PC_GWAS_man <- ggman(gwas = All_PCcor_top500, snp = "SNP", chrom = "CHROM", bp = "POS", pvalue = "GWAS_PCcor_q",
-                         xlabel = "Chromosome", ylabel = "-log10(qvalue)", pointSize = 1, 
-                         logTransform = T, sigLine = -log10(0.05)) + theme_classic()
-ggmanHighlightGroup(All_PC_GWAS_man, highlightDfm = six6_vgll3_WG, snp = "SNP", group = "gene")
-
-
-All_PCcor_top500 %>%  filter(GWAS_PCcor_q < 0.05)
-FQN_PC_FST_GWA_PCcor_top500 %>%  filter(GWAS_PCcor_q < 0.05)
-
-
-FQN_PC_FST_GWA_PCcor_top500 %>%  top_n(FST, n = 10)
-FQN_PC_GWAS_man <- ggman(gwas = FQN_PC_FST_GWA_PCcor_top500, snp = "SNP", chrom = "CHROM", bp = "POS", pvalue = "GWAS_PCcor_q",
-                         xlabel = "Chromosome", ylabel = "-log10(qvalue)", pointSize = 2, 
-                         logTransform = T, sigLine = -log10(0.05)) + theme_classic()
-ggmanHighlightGroup(FQN_PC_GWAS_man, highlightDfm = six6_vgll3_WG, snp = "SNP", group = "gene")
 
 
 MNL_LRT100 <- MNL_PC_FST_GWA_PCcor %>%  slice_max(LRT, n = 100)
@@ -629,17 +601,4 @@ mean_check <- function(allDF,OLdf){
   return(data.frame(mean_100, mean_all))}
 mean_check(OLdf = FQN_LRT100, allDF = FQN_PC_FST_GWA_PCcor)
 wilcox.test(abs(FQN_LRT100$beta), abs(FQN_PC_FST_GWA_PCcor$beta))
-
-#for topGO
-MNL_LRT100_bed <- MNL_LRT100 %>% select(CHROM, POS) %>%  mutate(POS2 = POS + 1)
-FNL_LRT100_bed <- FNL_LRT100 %>% select(CHROM, POS) %>%  mutate(POS2 = POS + 1)
-MQN_LRT100_bed <- MQN_LRT100 %>% select(CHROM, POS) %>%  mutate(POS2 = POS + 1)
-FQN_LRT100_bed <- FQN_LRT100 %>% select(CHROM, POS) %>%  mutate(POS2 = POS + 1)
-fwrite(MNL_LRT100_bed, "MNL_LRT100.bed", col.names = F, sep = "\t", row.names = F, quote = F)
-fwrite(FNL_LRT100_bed, "FNL_LRT100.bed", col.names = F, sep = "\t", row.names = F, quote = F)
-fwrite(MQN_LRT100_bed, "MQN_LRT100.bed", col.names = F, sep = "\t", row.names = F, quote = F)
-fwrite(FQN_LRT100_bed, "FQN_LRT100.bed", col.names = F, sep = "\t", row.names = F, quote = F)
-
-ssalar_genes <- fread("ssalar_gene_result.txt")
-ssalar_bed <- ssalar_genes
 
