@@ -602,3 +602,41 @@ mean_check <- function(allDF,OLdf){
 mean_check(OLdf = FQN_LRT100, allDF = FQN_PC_FST_GWA_PCcor)
 wilcox.test(abs(FQN_LRT100$beta), abs(FQN_PC_FST_GWA_PCcor$beta))
 
+##plotting
+FQN_Sig_gene <- FQN_PC_FST_GWA_PCcorr_gene_overlap %>%  filter(GWAS_PCcor_q < 0.05) %>%  arrange(desc(GWAS_PCcor_q)) %>% 
+  mutate(SNP = paste0(CHROM, POS)) %>% select(SNP, gene)
+FQN_PC_FST_GWA_PCcorr %>% filter(GWAS_PCcor_q < 0.05) %>%  arrange(desc(GWAS_PCcor_q))
+
+MSW_VGLL3_FQN  <- FQN_PC_FST_GWA_PCcorr %>%  filter(CHROM %in% "ssa25", POS %in% 28669350) %>%  
+  mutate(SNP = paste0(CHROM, POS), gene = paste0("ssa25_28669350")) %>% select(SNP, gene)
+
+FQN_Sig_gene  <- bind_rows(FQN_Sig_gene , MSW_VGLL3_FQN )
+
+# plot top 5K FQN
+FQN_PC_FST_GWA_PCcor_top5000 <- FQN_PC_FST_GWA_PCcorr %>% 
+  top_n(5000, LRT) %>% mutate(SNP = paste0(CHROM, POS))
+FQN_PC_GWAS_man <- ggman(gwas = FQN_PC_FST_GWA_PCcor_top5000, snp = "SNP", chrom = "CHROM", bp = "POS", pvalue = "GWAS_PCcor_q",
+                         xlabel = "Chromosome", ylabel = "-log10(qvalue)", pointSize = 2, 
+                         logTransform = T, sigLine = -log10(0.05)) + theme_classic()
+ggmanHighlightGroup(FQN_PC_GWAS_man, highlightDfm = FQN_Sig_gene, snp = "SNP", group = "gene")
+
+FQN_PC_FST_GWA_PCcor_top500 %>%  arrange(GWAS_PCcor_q)
+ggplot()  + geom_point(data = FQN_PC_FST_GWA_PCcorr %>%  filter(CHROM %in% "ssa25", POS > 28600000, POS < 28700000 ), aes(x = POS, y = -log10(GWAS_PCcor_q))) + geom_hline(yintercept  = -log10(0.05)) +
+  geom_point(data = FQN_PC_FST_GWA_PCcorr_gene_overlap %>%  filter(CHROM %in% "ssa25", gene %in% "vgll3",  POS > 28600000, POS < 28700000), aes(x = POS, y = -log10(GWAS_PCcor_q), colour = "genes")) + theme_classic()
+ 
+
+All_Sig_gene <- PC_FST_GWA_PCcor_MSW_1SW_gene_overlap %>%  filter(GWAS_PCcor_q < 0.05) %>%  arrange(desc(GWAS_PCcor_q)) %>% 
+  mutate(SNP = paste0(CHROM, POS)) %>% select(SNP, gene)
+
+MSW_VGLL3_All  <- All_FST_GWA_PCcorr %>%  filter(CHROM %in% "ssa25", POS %in% 28669350) %>%  
+  mutate(SNP = paste0(CHROM, POS), gene = paste0("ssa25_28669350")) %>% select(SNP, gene)
+
+All_Sig_gene  <- bind_rows(All_Sig_gene , MSW_VGLL3_All )
+
+All_FST_GWA_PCcorr_top5000 <- All_FST_GWA_PCcorr  %>% 
+  top_n(5000, LRT) %>% mutate(SNP = paste0(CHROM, POS))
+All_PC_GWAS_man <- ggman(gwas = All_FST_GWA_PCcorr_top500, snp = "SNP", chrom = "CHROM", bp = "POS", pvalue = "GWAS_PCcor_q",
+                         xlabel = "Chromosome", ylabel = "-log10(qvalue)", pointSize = 2, 
+                         logTransform = T, sigLine = -log10(0.05)) + theme_classic()
+ggmanHighlightGroup(All_PC_GWAS_man, highlightDfm = All_Sig_gene, snp = "SNP", group = "gene")
+
